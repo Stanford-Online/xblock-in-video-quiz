@@ -1,2 +1,2 @@
-New XBlock
+In Video Quiz XBlock
 ====================

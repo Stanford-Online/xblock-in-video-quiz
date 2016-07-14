@@ -1,0 +1,1 @@
+from .invideoquiz import InVideoQuizXBlock
