@@ -18,9 +18,7 @@ branches:
     only:
       - 'master'
 env:
-    - TOXENV=py27-dj14
     - TOXENV=py27-dj18
     - TOXENV=coveralls
     - TOXENV=pep8
-    - TOXENV=pyflakes
     - TOXENV=pylint

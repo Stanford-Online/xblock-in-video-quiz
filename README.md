@@ -1,2 +1,0 @@
-In Video Quiz XBlock
-====================

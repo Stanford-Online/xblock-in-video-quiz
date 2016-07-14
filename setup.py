@@ -4,6 +4,7 @@ import os
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
+
 def package_data(pkg, roots):
     """Generic function to find package_data.
 
@@ -19,15 +20,19 @@ def package_data(pkg, roots):
 
     return {pkg: data}
 
+
 class Tox(TestCommand):
-    user_options = [('tox-args=', 'a', "Arguments to pass to tox")]
+    user_options = [('tox-args=', 'a', 'Arguments to pass to tox')]
+
     def initialize_options(self):
         TestCommand.initialize_options(self)
         self.tox_args = None
+
     def finalize_options(self):
         TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
+
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded
         import tox
@@ -41,18 +46,27 @@ class Tox(TestCommand):
 setup(
     name='invideoquiz-xblock',
     version='0.1',
-    description='invideoquiz XBlock',   # TODO: write a better description.
-    license='UNKNOWN',          # TODO: choose a license: 'AGPL v3' and 'Apache 2.0' are popular.
+    description='Helper XBlock to locate CAPA problems within videos.',
+    license='AGPL v3',
     packages=[
         'invideoquiz',
     ],
     install_requires=[
+        'django >= 1.8, < 1.9',
+        'django_nose',
+        'mock',
+        'coverage',
+        'mako',
         'XBlock',
+        'xblock-utils',
+    ],
+    dependency_links=[
+        'https://github.com/edx/xblock-utils/tarball/c39bf653e4f27fb3798662ef64cde99f57603f79#egg=xblock-utils',
     ],
     entry_points={
         'xblock.v1': [
             'invideoquiz = invideoquiz:InVideoQuizXBlock',
-        ]
+        ],
     },
-    package_data=package_data("invideoquiz", ["static", "public"]),
+    package_data=package_data('invideoquiz', ['static', 'public']),
 )
