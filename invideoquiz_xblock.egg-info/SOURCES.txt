@@ -1,0 +1,17 @@
+setup.cfg
+setup.py
+invideoquiz/__init__.py
+invideoquiz/invideoquiz.py
+invideoquiz/settings.py
+invideoquiz/tests.py
+invideoquiz/public/README.txt
+invideoquiz/public/css/invideoquiz.css
+invideoquiz/public/html/invideoquiz.html
+invideoquiz/public/js/src/config.js
+invideoquiz/public/js/src/invideoquiz.js
+invideoquiz_xblock.egg-info/PKG-INFO
+invideoquiz_xblock.egg-info/SOURCES.txt
+invideoquiz_xblock.egg-info/dependency_links.txt
+invideoquiz_xblock.egg-info/entry_points.txt
+invideoquiz_xblock.egg-info/requires.txt
+invideoquiz_xblock.egg-info/top_level.txt
