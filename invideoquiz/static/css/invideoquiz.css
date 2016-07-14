@@ -1,0 +1,9 @@
+/* CSS for InVideoQuizXBlock */
+
+.invideoquiz_block .count {
+    font-weight: bold;
+}
+
+.invideoquiz_block p {
+    cursor: pointer;
+}
