@@ -1,0 +1,45 @@
+/* CSS for InVideoQuizXBlock */
+
+#seq_content .vert-mod {
+    position: relative;
+}
+#seq_content .vert-mod .in-video-alert {
+    padding: 5px 10px;
+    background: #eee;
+    border-radius: 5px;
+}
+
+.in-video-problem-wrapper {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+    border-bottom: none !important;
+}
+.in-video-problem {
+    position: absolute;
+    top: 50px;
+    padding: 25px 25px 0 25px !important;
+    background: white;
+    box-sizing: border-box;
+    width: 100%;
+    height: 453px;
+    overflow-y: scroll;
+    z-index: 99;
+}
+.video-fullscreen .in-video-problem {
+    position: fixed;
+    height: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 65px;
+    z-index: 10000;
+}
+.video-controls {
+    z-index: 100;
+}
+.in-video-continue {
+    float: right;
+    height: 40px;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+}
