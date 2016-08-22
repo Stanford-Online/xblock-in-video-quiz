@@ -29,14 +29,14 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
 
     video_id = String(
         display_name=_('Video ID'),
-        default=_(''),
+        default='',
         scope=Scope.settings,
         help=_('This is the in video quiz video ID'),
     )
 
     timemap = String(
         display_name=_('Problem Timemap'),
-        default=_(''),
+        default='',
         scope=Scope.settings,
         help=_(
             'A simple string field to define problem IDs and their time maps (in seconds) as JSON. '
