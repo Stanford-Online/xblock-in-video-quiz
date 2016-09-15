@@ -1,4 +1,6 @@
-"""Helper XBlock to locate CAPA problems within videos."""
+"""
+Locate CAPA problems within videos.
+"""
 
 import os
 import pkg_resources
@@ -9,20 +11,16 @@ from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.fields import String
 from xblock.fragment import Fragment
-
 from xblockutils.studio_editable import StudioEditableXBlockMixin
 
 
 class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
     """
-    This XBlock facilitates displaying CAPA problems within a video component and a specified time.
+    Display CAPA problems within a video component at a specified time.
     """
 
-    # Fields are defined on the class.  You can access them in your code as
-    # self.<fieldname>.
-
     display_name = String(
-        display_name=_('Display Name:'),
+        display_name=_('Display Name'),
         default=_('In-Video Quiz XBlock'),
         scope=Scope.settings,
     )
@@ -50,12 +48,12 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
         'timemap',
     ]
 
-    # TO-DO: change this view to display your data your own way.
     def student_view(self, context=None):
         """
-        The primary view of the InVideoQuizXBlock, shown to students
-        when viewing courses.
+        Show to students when viewing courses
         """
+        print('GGG, timemap', self.timemap.replace("\n", " "))
+
         fragment = self.build_fragment(
             path_html='html/invideoquiz.html',
             paths_css=[
@@ -70,30 +68,35 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
             },
         )
 
-        config = self.get_resource_string("js/src/config.js")
+        config = self.get_resource_string('js/src/config.js')
+        
+        print("GGG, config", config)
+        
         config = config.format(
             video_id=self.video_id,
             timemap=self.timemap,
         )
+        
+        print("GGG, config formatted", config)
+        
         fragment.add_javascript(config)
-
-        if not self.video_id:
-            pass #logger.warn('Rendering InVideoQuiz xBlock without a video ID')
 
         return fragment
 
     @staticmethod
     def workbench_scenarios():
-        """A canned scenario for display in the workbench."""
+        """
+        A canned scenario for display in the workbench.
+        """
         return [
             ("InVideoQuizXBlock",
-             """<invideoquiz/>
+             """<invideoquiz video_id="###" timemap="{ 10: "###" }" />
              """),
             ("Multiple InVideoQuizXBlock",
              """<vertical_demo>
-                <invideoquiz/>
-                <invideoquiz/>
-                <invideoquiz/>
+                <invideoquiz video_id="###" timemap="{ 10: "###" }"/>
+                <invideoquiz video_id="###" timemap="{ 10: "###" }"/>
+                <invideoquiz video_id="###" timemap="{ 10: "###" }"/>
                 </vertical_demo>
              """),
         ]

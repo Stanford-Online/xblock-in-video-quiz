@@ -1,10 +1,12 @@
-/* Configuration for InVideoQuizzes */
 var InVideoQuizXBlock = InVideoQuizXBlock || {{}};
 
-InVideoQuizXBlock.config = InVideoQuizXBlock.config || {{}};
+(function () {{
+    /* Configuration for InVideoQuizzes */
 
-var videoId = '{video_id}';
-var timemap = `{timemap}`;
-if (videoId) {{
-    InVideoQuizXBlock.config[videoId] = JSON.parse(timemap);
-}}
+    InVideoQuizXBlock.config = InVideoQuizXBlock.config || {{}};
+
+    var videoId = '{video_id}';
+    if (videoId) {{
+        InVideoQuizXBlock.config[videoId] = {timemap};
+    }}
+}}());
