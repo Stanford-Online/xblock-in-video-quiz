@@ -37,7 +37,8 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
         default='',
         scope=Scope.settings,
         help=_(
-            'A simple string field to define problem IDs and their time maps (in seconds) as JSON. '
+            'A simple string field to define problem IDs '
+            'and their time maps (in seconds) as JSON. '
             'Example: { "10": "component_id_of_element"}'
         ),
         multiline_editor=True,
@@ -69,16 +70,16 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
         )
 
         config = self.get_resource_string('js/src/config.js')
-        
+
         print("GGG, config", config)
-        
+
         config = config.format(
             video_id=self.video_id,
             timemap=self.timemap,
         )
-        
+
         print("GGG, config formatted", config)
-        
+
         fragment.add_javascript(config)
 
         return fragment
@@ -117,7 +118,8 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
         resource_url = self.runtime.local_resource_url(self, path)
         return resource_url
 
-    def build_fragment(self,
+    def build_fragment(
+        self,
         path_html='',
         paths_css=[],
         paths_js=[],
