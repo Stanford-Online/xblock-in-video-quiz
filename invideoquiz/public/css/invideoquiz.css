@@ -9,15 +9,15 @@
     border-radius: 5px;
 }
 
-.in-video-problem-wrapper {
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-    border-bottom: none !important;
+#seq_content .vert-mod .vert.in-video-problem-wrapper {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
 }
-.in-video-problem {
+#seq_content .vert-mod .vert.in-video-problem-wrapper .in-video-problem {
     position: absolute;
     top: 50px;
-    padding: 25px 25px 0 25px !important;
+    padding: 25px 25px 0 25px;
     background: white;
     box-sizing: border-box;
     width: 100%;
