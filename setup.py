@@ -60,7 +60,7 @@ setup(
         'coverage',
     ],
     dependency_links=[
-        'https://github.com/edx/xblock-utils/tarball/c39bf653e4f27fb3798662ef64cde99f57603f79#egg=xblock-utils',
+        'http://github.com/edx-solutions/xblock-utils/tarball/master#egg=xblock-utils',
     ],
     entry_points={
         'xblock.v1': [
