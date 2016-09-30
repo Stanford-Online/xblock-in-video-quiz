@@ -1,1 +1,1 @@
-from .invideoquiz import InVideoQuizXBlock
+# from .invideoquiz import InVideoQuizXBlock
