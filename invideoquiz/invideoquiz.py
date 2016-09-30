@@ -134,8 +134,8 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
         # If no context is provided, convert self.fields into a dict
         context = context or {
             key: getattr(self, key)
-                for key in self.fields
-                    if key not in DEFAULT_FIELDS
+            for key in self.fields
+                if key not in DEFAULT_FIELDS
         }
         html_source = self.get_resource_string(path_html)
         html_source = html_source.format(
