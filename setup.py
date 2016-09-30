@@ -52,9 +52,9 @@ setup(
         'invideoquiz',
     ],
     install_requires=[
-        'XBlock',
+        'xblock-openedx==0.4.1',
         'xblock-openedx-utils==0.9.0',
-        'django',
+        'django==1.8.15',
         'django_nose',
         'mock',
         'coverage',
