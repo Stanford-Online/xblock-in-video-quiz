@@ -119,14 +119,14 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
         return resource_url
 
     def build_fragment(
-        self,
-        path_html='',
-        paths_css=[],
-        paths_js=[],
-        urls_css=[],
-        urls_js=[],
-        fragment_js=None,
-        context=None,
+            self,
+            path_html='',
+            paths_css=[],
+            paths_js=[],
+            urls_css=[],
+            urls_js=[],
+            fragment_js=None,
+            context=None,
     ):
         """
         Assemble the HTML, JS, and CSS for an XBlock fragment
