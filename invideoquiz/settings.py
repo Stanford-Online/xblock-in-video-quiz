@@ -1,3 +1,7 @@
+"""
+Settings for in-video-quiz xblock
+"""
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
