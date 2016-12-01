@@ -1,3 +1,4 @@
 git+https://github.com/edx/XBlock.git#egg=XBlock
 git+https://github.com/edx/xblock-utils.git@v1.0.0#egg=xblock-utils==v1.0.0
+git+https://github.com/edx/opaque-keys.git@27dc382ea587483b1e3889a3d19cbd90b9023a06#egg=opaque-keys
 -e .
