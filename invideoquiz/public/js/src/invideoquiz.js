@@ -84,9 +84,9 @@ function InVideoQuizXBlock(runtime, element) {
             var problemToDisplayId = problemTimesMap[videoTime];
             if (problemToDisplayId && canDisplayProblem) {
               $('.wrapper-downloads, .video-controls', video).hide();
-              var hasProblemToDisplay = $(this).data('id').indexOf(problemToDisplayId) !== -1;
               $('#seq_content .vert-mod .vert').each(function () {
-                if (hasProblemToDisplay) {
+                var isProblemToDisplay = $(this).data('id').indexOf(problemToDisplayId) !== -1;
+                if (isProblemToDisplay) {
                   problemToDisplay = $('.xblock-student_view', this)
                   videoState.videoPlayer.pause();
                   problemToDisplay.show();
