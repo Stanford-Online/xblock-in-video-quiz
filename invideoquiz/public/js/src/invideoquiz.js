@@ -1,8 +1,11 @@
 /* Javascript for InVideoQuizXBlock. */
 function InVideoQuizXBlock(runtime, element) {
     var videoId = $('.in-video-quiz-block').data('videoid');
+    if (!videoId || !InVideoQuizXBlock.config.hasOwnProperty(videoId)) {
+        return;
+    }
+    var problemTimesMap = InVideoQuizXBlock.config[videoId];
     var studentMode = $('.in-video-quiz-block').data('mode') !== 'staff';
-    var problemTimesMap = InVideoQuizXBlock.config[videoId] || {};
     var extraVideoButton = '<button class="in-video-continue">Continue</button>';
     var video;
     var videoState;
@@ -17,10 +20,6 @@ function InVideoQuizXBlock(runtime, element) {
 
     $(function () {
         $('.in-video-quiz-block').closest('.vert').hide();
-
-        if (!videoId || !problemTimesMap) {
-            return;
-        }
 
         $('#seq_content .vert-mod .vert').each(function () {
             var component = $(this);
