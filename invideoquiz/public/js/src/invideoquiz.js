@@ -1,5 +1,6 @@
 /* Javascript for InVideoQuizXBlock. */
 function InVideoQuizXBlock(runtime, element) {
+    $('.in-video-quiz-block').closest('.vert').hide();
     var videoId = $('.in-video-quiz-block').data('videoid');
     if (!videoId || !InVideoQuizXBlock.config.hasOwnProperty(videoId)) {
         return;
@@ -19,8 +20,6 @@ function InVideoQuizXBlock(runtime, element) {
     var intervalTimeout = 1500;
 
     $(function () {
-        $('.in-video-quiz-block').closest('.vert').hide();
-
         $('#seq_content .vert-mod .vert').each(function () {
             var component = $(this);
 
