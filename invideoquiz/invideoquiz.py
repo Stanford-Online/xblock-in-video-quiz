@@ -48,7 +48,7 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
 
     timemap = String(
         display_name=_('Problem Timemap'),
-        default={},
+        default='{}',
         scope=Scope.settings,
         help=_(
             'A simple string field to define problem IDs '
