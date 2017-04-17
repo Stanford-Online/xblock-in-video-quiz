@@ -61,6 +61,13 @@ function InVideoQuizXBlock(runtime, element) {
             }
         });
     }
+    
+    function resizeInVideoProblem(currentProblem, currentVideo) {
+        var videoPosition = $('.tc-wrapper', currentVideo).position().top;
+        var videoHeight = $('.tc-wrapper', currentVideo).css('height');
+        var videoWidth = $('.tc-wrapper', currentVideo).css('width');
+        currentProblem.css({top: videoPosition, height: videoHeight, width: videoWidth});
+    }
 
     // Bind In Video Quiz display to video time, as well as play and pause buttons
     function bindVideoEvents() {
@@ -87,6 +94,7 @@ function InVideoQuizXBlock(runtime, element) {
                 if (isProblemToDisplay) {
                   problemToDisplay = $('.xblock-student_view', this)
                   videoState.videoPlayer.pause();
+                  resizeInVideoProblem(problemToDisplay, video);
                   problemToDisplay.show();
                   canDisplayProblem = false;
                 }
