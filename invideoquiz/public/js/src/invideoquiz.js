@@ -87,6 +87,9 @@ function InVideoQuizXBlock(runtime, element) {
                 if (isProblemToDisplay) {
                   problemToDisplay = $('.xblock-student_view', this)
                   videoState.videoPlayer.pause();
+                  var videoPosition = $('.tc-wrapper', video).position().top;
+                  var videoHeight = $('.tc-wrapper', video).css('height');
+                  problemToDisplay.css({top: videoPosition, height: videoHeight});
                   problemToDisplay.show();
                   canDisplayProblem = false;
                 }
