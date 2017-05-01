@@ -96,6 +96,7 @@ function InVideoQuizXBlock(runtime, element) {
                   videoState.videoPlayer.pause();
                   resizeInVideoProblem(problemToDisplay, video);
                   problemToDisplay.show();
+                  problemToDisplay.css({display: 'block'});
                   canDisplayProblem = false;
                 }
               });
