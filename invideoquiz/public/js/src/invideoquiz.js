@@ -11,6 +11,12 @@ function InVideoQuizXBlock(runtime, element) {
     var video;
     var videoState;
 
+    var knownVideoDimensions;
+
+    // Interval at which to check if video size has changed size
+    // and the displayed problems needs to do the same
+    var resizeIntervalTime = 100;
+
     // Interval at which to check for problems to display
     // Checking every 0.5 seconds to make sure we check at least once per actual second of video
     var intervalTime = 500;
@@ -31,6 +37,7 @@ function InVideoQuizXBlock(runtime, element) {
         });
 
         if (studentMode) {
+          knownVideoDimensions = getVideoDimensions();
           bindVideoEvents();
         }
     });
@@ -50,6 +57,25 @@ function InVideoQuizXBlock(runtime, element) {
         }
     }
 
+    function getVideoDimensions() {
+        videoPosition = $('.tc-wrapper', video).position().top;
+        videoHeight = $('.tc-wrapper', video).css('height');
+        videoWidth = $('.tc-wrapper', video).css('width');
+        return [videoPosition, videoHeight, videoWidth];
+    }
+
+    function videoDimensionsDiffer(newMeasurement, oldMeasurement) {
+        if (newMeasurement.length !== oldMeasurement.length) {
+            return true;
+        }
+        for (var i = 0; i < oldMeasurement.length; i++) {
+            if (oldMeasurement[i] !== newMeasurement[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function showProblemTimesToInstructor(component) {
         $.each(problemTimesMap, function (time, componentId) {
             var isInVideoComponent = component.data('id').indexOf(componentId) !== -1;
@@ -62,20 +88,24 @@ function InVideoQuizXBlock(runtime, element) {
         });
     }
     
-    function resizeInVideoProblem(currentProblem, currentVideo) {
-        var videoPosition = $('.tc-wrapper', currentVideo).position().top;
-        var videoHeight = $('.tc-wrapper', currentVideo).css('height');
-        var videoWidth = $('.tc-wrapper', currentVideo).css('width');
-        currentProblem.css({top: videoPosition, height: videoHeight, width: videoWidth});
+    function resizeInVideoProblem(currentProblem, videoDimensions) {
+        currentProblem.css({
+            top: videoDimensions[0],
+            height: videoDimensions[1],
+            width: videoDimensions[2]
+        });
     }
 
     // Bind In Video Quiz display to video time, as well as play and pause buttons
     function bindVideoEvents() {
         var canDisplayProblem = true;
         var intervalObject;
+        var resizeIntervalObject;
         var problemToDisplay;
 
         video.on('play', function () {
+          clearInterval(resizeIntervalObject);
+
           if (problemToDisplay) {
             window.setTimeout(function () {
               canDisplayProblem = true;
@@ -94,7 +124,7 @@ function InVideoQuizXBlock(runtime, element) {
                 if (isProblemToDisplay) {
                   problemToDisplay = $('.xblock-student_view', this)
                   videoState.videoPlayer.pause();
-                  resizeInVideoProblem(problemToDisplay, video);
+                  resizeInVideoProblem(problemToDisplay, getVideoDimensions());
                   problemToDisplay.show();
                   problemToDisplay.css({display: 'block'});
                   canDisplayProblem = false;
@@ -107,6 +137,17 @@ function InVideoQuizXBlock(runtime, element) {
         video.on('pause', function () {
           clearInterval(intervalObject);
           if (problemToDisplay) {
+            resizeIntervalObject = setInterval(function () {
+
+              // check if the size has changed from the previous state; if so, update
+              // both our known size measurements and the size of the problem
+              currentVideoDimensions = getVideoDimensions();
+
+              if (videoDimensionsDiffer(currentVideoDimensions, knownVideoDimensions)) {
+                    resizeInVideoProblem(problemToDisplay, currentVideoDimensions);
+                    knownVideoDimensions = currentVideoDimensions;
+              }
+            }, resizeIntervalTime);
             $('.in-video-continue', problemToDisplay).on('click', function () {
               $('.wrapper-downloads, .video-controls', video).show();
               videoState.videoPlayer.play();
