@@ -11,13 +11,19 @@ function InVideoQuizXBlock(runtime, element) {
     var video;
     var videoState;
 
+    var knownDimensions;
+
+    // Interval at which to check if video size has changed size
+    // and the displayed problems needs to do the same
+    var resizeIntervalTime = 100;
+
     // Interval at which to check for problems to display
     // Checking every 0.5 seconds to make sure we check at least once per actual second of video
-    var intervalTime = 500;
+    var displayIntervalTime = 500;
 
     // Timeout to wait before checking for problems again after "play" is clicked
     // Waiting 1.5 seconds to make sure we are moved to the next second and we don't get a double firing
-    var intervalTimeout = 1500;
+    var displayIntervalTimeout = 1500;
 
     $(function () {
         $('#seq_content .vert-mod .vert').each(function () {
@@ -31,6 +37,7 @@ function InVideoQuizXBlock(runtime, element) {
         });
 
         if (studentMode) {
+          knownDimensions = getDimensions();
           bindVideoEvents();
         }
     });
@@ -50,6 +57,28 @@ function InVideoQuizXBlock(runtime, element) {
         }
     }
 
+    function getDimensions() {
+        var position = $('.tc-wrapper', video).position().top;
+        var height = $('.tc-wrapper', video).css('height');
+        var width = $('.tc-wrapper', video).css('width');
+        return {
+          'top': position,
+          'height': height,
+          'width': width
+        };
+    }
+
+    function dimensionsHaveChanged(newDimensions) {
+        for (var key in knownDimensions) {
+            if (newDimensions.hasOwnProperty(key)) {
+                if (knownDimensions[key] !== newDimensions[key]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     function showProblemTimesToInstructor(component) {
         $.each(problemTimesMap, function (time, componentId) {
             var isInVideoComponent = component.data('id').indexOf(componentId) !== -1;
@@ -61,18 +90,25 @@ function InVideoQuizXBlock(runtime, element) {
             }
         });
     }
+    
+    function resizeInVideoProblem(currentProblem, dimensions) {
+        currentProblem.css(dimensions);
+    }
 
     // Bind In Video Quiz display to video time, as well as play and pause buttons
     function bindVideoEvents() {
         var canDisplayProblem = true;
         var intervalObject;
+        var resizeIntervalObject;
         var problemToDisplay;
 
         video.on('play', function () {
+          clearInterval(resizeIntervalObject);
+
           if (problemToDisplay) {
             window.setTimeout(function () {
               canDisplayProblem = true;
-            }, intervalTimeout);
+            }, displayIntervalTimeout);
             problemToDisplay.hide();
             problemToDisplay = null;
           }
@@ -87,17 +123,26 @@ function InVideoQuizXBlock(runtime, element) {
                 if (isProblemToDisplay) {
                   problemToDisplay = $('.xblock-student_view', this)
                   videoState.videoPlayer.pause();
+                  resizeInVideoProblem(problemToDisplay, getDimensions());
                   problemToDisplay.show();
+                  problemToDisplay.css({display: 'block'});
                   canDisplayProblem = false;
                 }
               });
             }
-          }, intervalTime);
+          }, displayIntervalTime);
         });
 
         video.on('pause', function () {
           clearInterval(intervalObject);
           if (problemToDisplay) {
+            resizeIntervalObject = setInterval(function () {
+              var currentDimensions = getDimensions();
+              if (dimensionsHaveChanged(currentDimensions)) {
+                    resizeInVideoProblem(problemToDisplay, currentDimensions);
+                    knownDimensions = currentDimensions;
+              }
+            }, resizeIntervalTime);
             $('.in-video-continue', problemToDisplay).on('click', function () {
               $('.wrapper-downloads, .video-controls', video).show();
               videoState.videoPlayer.play();
