@@ -46,7 +46,6 @@ function InVideoQuizXBlock(runtime, element) {
         var componentIsVideo = component.data('id').indexOf(videoId) !== -1;
         if (componentIsVideo) {
             video = $('.video', component);
-            videoState = video.data('video-player-state');
         } else {
             $.each(problemTimesMap, function (time, componentId) {
                 if (component.data('id').indexOf(componentId) !== -1) {
@@ -103,6 +102,8 @@ function InVideoQuizXBlock(runtime, element) {
         var problemToDisplay;
 
         video.on('play', function () {
+          videoState = videoState || video.data('video-player-state');
+
           clearInterval(resizeIntervalObject);
 
           if (problemToDisplay) {
@@ -134,6 +135,7 @@ function InVideoQuizXBlock(runtime, element) {
         });
 
         video.on('pause', function () {
+          videoState = videoState || video.data('video-player-state');
           clearInterval(intervalObject);
           if (problemToDisplay) {
             resizeIntervalObject = setInterval(function () {
