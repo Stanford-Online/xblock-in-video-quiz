@@ -1,0 +1,53 @@
+{% load i18n %}
+<div class="editor-with-buttons">
+  <div class="wrapper-comp-settings is-active editor-with-buttons" id="settings-tab">
+    <div class="invideo-editor">
+        <div class="video-details">
+            <span class="label">Video:</span>
+            <span>
+                <select name="video">
+                    {% for option in video_options %}
+                      <option value="{{option.block_id}}" {% if video_id == option.block_id %}selected{% endif %}>{{option.label}}</option>
+                    {% endfor %}
+                </select>
+            </span>
+        </div>
+        <table>
+            <th class="timemaps-header">
+                <tr>
+                    <td>Start Time</td>
+                    <td>Problem Component</td>
+                </tr>
+            </th>
+            {% for mapping in timemaps %}
+                <tr>
+                    <td>
+                        <input
+                            type="text" name="time_{{ forloop.counter0 }}"
+                            value="{% if mapping.time %}{{ mapping.time }}{% endif %}">
+                        </input>
+                    </td>
+                    <td>
+                        <select name="problem_block_{{ forloop.counter0 }}">
+                            {% for option in problem_options %}
+                              <option value="{{option.block_id}}" {% if mapping.block_id == option.block_id %}selected{% endif %}>{{option.label}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+  </div>
+  <div class="xblock-actions">
+    <ul>
+      <li class="action-item">
+        <a href="#" class="button action-primary save-button">{% trans "Save" %}</a>
+      </li>
+
+      <li class="action-item">
+        <a href="#" class="button cancel-button">{% trans "Cancel" %}</a>
+      </li>
+    </ul>
+  </div>
+</div>

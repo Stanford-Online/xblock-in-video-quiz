@@ -9,10 +9,14 @@ import pkg_resources
 from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.fields import String
-from xblock.fragment import Fragment
+from web_fragments.fragment import Fragment
 from xblockutils.studio_editable import StudioEditableXBlockMixin
+from xblockutils.resources import ResourceLoader
 
 from .utils import _
+
+
+loader = ResourceLoader(__name__)
 
 
 def get_resource_string(path):
@@ -24,7 +28,9 @@ def get_resource_string(path):
     return resource_string.decode('utf8')
 
 
-class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
+#class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
+class InVideoQuizXBlock(XBlock):
+
     # pylint: disable=too-many-ancestors
     """
     Display CAPA problems within a video component at a specified time.
@@ -62,6 +68,81 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
         'video_id',
         'timemap',
     ]
+
+
+    def _get_options(self, parent_block, block_type):
+        locators = [child for child in parent_block.children if child.block_type == block_type]
+        options = [self._get_block_details(block) for block in locators]
+        options.insert(0, {
+            'display_name': 'Select a component',
+            'block_id': 'blank',
+        })
+
+        # add the block id if there are duplicate options with the same name
+        for option in options:
+            count = sum(other_option['display_name'] == option['display_name'] for other_option in options)
+            option['label'] = option['display_name']
+            if count > 1:
+                option['label'] += ' (' + option['block_id'] + ')'
+
+        return options
+
+
+    def _get_block_details(self, block_locator):
+        block = self.runtime.get_block(block_locator)
+        block_details = {
+            'display_name': block.display_name,
+            'block_id': block_locator.block_id,
+        }
+        return block_details
+
+
+    def studio_view(self, context):
+        """
+        Render a form for editing this XBlock
+        """
+        fragment = Fragment()
+        # context = {'fields': []}
+        # # Build a list of all the fields that can be edited:
+        # for field_name in self.editable_fields:
+        #     field = self.fields[field_name]
+        #     assert field.scope in (Scope.content, Scope.settings), (
+        #         "Only Scope.content or Scope.settings fields can be used with "
+        #         "StudioEditableXBlockMixin. Other scopes are for user-specific data and are "
+        #         "not generally created/configured by content authors in Studio."
+        #     )
+        #     field_info = self._make_field_info(field_name, field)
+        #     if field_info is not None:
+        #         context["fields"].append(field_info)
+
+        # self.children
+
+        parent_block = self.runtime.get_block(self.parent)
+        video_options = self._get_options(parent_block, 'video')
+        problem_options = self._get_options(parent_block, 'problem')
+
+        # Add up to 7 if they aren't there
+        timemaps = [
+            {'time': 3, 'block_id': '1bc2cdb12fe44b219332756bece8734e'},
+            {'time': 4, 'block_id': None},
+            {'time': 6, 'block_id': None},
+            {'time': None, 'block_id': None},
+            {'time': None, 'block_id': None},
+            {'time': None, 'block_id': None},
+            {'time': None, 'block_id': None},
+        ]
+
+        context = {
+            'video_options': video_options,
+            'problem_options': problem_options,
+            'timemaps': timemaps,
+        }
+
+        fragment.content = loader.render_template('templates/studio_invideo_edit.html', context)
+        fragment.add_javascript(loader.load_unicode('public/studio_edit.js'))
+        fragment.initialize_js('StudioEditableXBlockMixin')
+        return fragment
+
 
     # Decorate the view in order to support multiple devices e.g. mobile
     # See: https://openedx.atlassian.net/wiki/display/MA/Course+Blocks+API
