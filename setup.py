@@ -68,5 +68,5 @@ setup(
             'invideoquiz = invideoquiz:InVideoQuizXBlock',
         ],
     },
-    package_data=package_data('invideoquiz', ['static', 'public']),
+    package_data=package_data('invideoquiz', ['static', 'public', 'templates']),
 )
