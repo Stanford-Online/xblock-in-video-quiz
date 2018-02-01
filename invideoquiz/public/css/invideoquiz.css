@@ -50,3 +50,10 @@
     margin-bottom: 25px;
     text-transform: uppercase;
 }
+
+.ui-dialog {
+    z-index: 1000;
+}
+.ui-dialog-titlebar {
+    display: none;
+}

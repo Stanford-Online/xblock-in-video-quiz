@@ -13,6 +13,8 @@ function InVideoQuizXBlock(runtime, element) {
 
     var knownDimensions;
 
+    var showProblemsAsPopup = true;
+
     // Interval at which to check if video size has changed size
     // and the displayed problems needs to do the same
     var resizeIntervalTime = 100;
@@ -50,7 +52,6 @@ function InVideoQuizXBlock(runtime, element) {
             $.each(problemTimesMap, function (time, componentId) {
                 if (component.data('id').indexOf(componentId) !== -1) {
                     component.addClass('in-video-problem-wrapper');
-                    $('.xblock-student_view', component).append(extraVideoButton).addClass('in-video-problem').hide();
                 }
             });
         }
@@ -84,7 +85,7 @@ function InVideoQuizXBlock(runtime, element) {
             if (isInVideoComponent) {
                 var minutes = parseInt(time / 60, 10);
                 var seconds = ('0' + (time % 60)).slice(-2);
-                var timeParagraph = '<p class="in-video-alert"><i class="fa fa-exclamation-circle"></i>This component will appear in the video at <strong>' + minutes + ':' + seconds + '</strong></p>';
+                var timeParagraph = '<p class="in-video-alert"><span class="fa fa-exclamation-circle"></span>This component will appear in the video at <strong>' + minutes + ':' + seconds + '</strong></p>';
                 component.prepend(timeParagraph);
             }
         });
@@ -100,6 +101,19 @@ function InVideoQuizXBlock(runtime, element) {
         var intervalObject;
         var resizeIntervalObject;
         var problemToDisplay;
+
+        $('.video-controls .secondary-controls').append('<button class="btn-problems-toggle">Disable Problems</button>');
+
+        $('.btn-problems-toggle').click(function () {
+            if (showProblemsAsPopup) {
+                showProblemsAsPopup = false;
+                $(this).text('Enable Problems');
+            }
+            else {
+                showProblemsAsPopup = true;
+                $(this).text('Disable Problems');
+            }
+        });
 
         video.on('play', function () {
           videoState = videoState || video.data('video-player-state');
@@ -118,15 +132,21 @@ function InVideoQuizXBlock(runtime, element) {
             var videoTime = parseInt(videoState.videoPlayer.currentTime, 10);
             var problemToDisplayId = problemTimesMap[videoTime];
             if (problemToDisplayId && canDisplayProblem) {
-              $('.wrapper-downloads, .video-controls', video).hide();
               $('#seq_content .vert-mod .vert').each(function () {
                 var isProblemToDisplay = $(this).data('id').indexOf(problemToDisplayId) !== -1;
-                if (isProblemToDisplay) {
-                  problemToDisplay = $('.xblock-student_view', this)
+                if (isProblemToDisplay && showProblemsAsPopup) {
                   videoState.videoPlayer.pause();
-                  resizeInVideoProblem(problemToDisplay, getDimensions());
-                  problemToDisplay.show();
-                  problemToDisplay.css({display: 'block'});
+                  var problemToDisplayEl = $('#problem_' + problemToDisplayId);
+                  problemToDisplayEl.dialog({
+                      width: "70%",
+                      buttons: [{
+                        text: window.gettext('Continue'),
+                        click: function() {
+                          $(this).dialog("destroy");
+                          videoState.videoPlayer.play();
+                        }
+                      }]
+                  });
                   canDisplayProblem = false;
                 }
               });
@@ -145,10 +165,6 @@ function InVideoQuizXBlock(runtime, element) {
                     knownDimensions = currentDimensions;
               }
             }, resizeIntervalTime);
-            $('.in-video-continue', problemToDisplay).on('click', function () {
-              $('.wrapper-downloads, .video-controls', video).show();
-              videoState.videoPlayer.play();
-            });
           }
         });
     }
