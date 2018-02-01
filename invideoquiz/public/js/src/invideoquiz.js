@@ -126,7 +126,6 @@ function InVideoQuizXBlock(runtime, element) {
             window.setTimeout(function () {
               canDisplayProblem = true;
             }, displayIntervalTimeout);
-            problemToDisplay.hide();
             problemToDisplay = null;
           }
 
@@ -138,8 +137,9 @@ function InVideoQuizXBlock(runtime, element) {
                 var isProblemToDisplay = $(this).data('id').indexOf(problemToDisplayId) !== -1;
                 if (isProblemToDisplay && showProblemsAsPopup) {
                   videoState.videoPlayer.pause();
-                  var problemToDisplayEl = $('#problem_' + problemToDisplayId).parent();
-                  problemToDisplayEl.dialog({
+                  problemToDisplay = $('#problem_' + problemToDisplayId);
+                  var problemToDisplayParent = $('#problem_' + problemToDisplayId).parent();
+                  problemToDisplayParent.dialog({
                       modal: true,
                       width: "70%",
                       buttons: [{
@@ -151,8 +151,8 @@ function InVideoQuizXBlock(runtime, element) {
                         }
                       }]
                   });
-                  problemToDisplayEl.attr('aria-live', 'assertive');
-                  problemToDisplayEl.prepend('<span class="sr">Video paused. Please answer this question.</span>');
+                  problemToDisplayParent.attr('aria-live', 'assertive');
+                  problemToDisplayParent.prepend('<span class="sr">Video paused. Please answer this question.</span>');
                   canDisplayProblem = false;
                 }
               });
