@@ -136,8 +136,9 @@ function InVideoQuizXBlock(runtime, element) {
                 var isProblemToDisplay = $(this).data('id').indexOf(problemToDisplayId) !== -1;
                 if (isProblemToDisplay && showProblemsAsPopup) {
                   videoState.videoPlayer.pause();
-                  var problemToDisplayEl = $('#problem_' + problemToDisplayId);
+                  var problemToDisplayEl = $('#problem_' + problemToDisplayId).parent();
                   problemToDisplayEl.dialog({
+                      modal: true,
                       width: "70%",
                       buttons: [{
                         text: window.gettext('Continue'),

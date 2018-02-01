@@ -51,9 +51,17 @@
     text-transform: uppercase;
 }
 
+/* Styling the modal */
 .ui-dialog {
     z-index: 1000;
 }
 .ui-dialog-titlebar {
     display: none;
+}
+
+.ui-widget-overlay {
+   background: #666 !important;
+   opacity: .30 !important;
+   filter: Alpha(Opacity=30) !important;
+   position:fixed !important;
 }
