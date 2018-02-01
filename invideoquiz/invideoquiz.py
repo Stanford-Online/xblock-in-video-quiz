@@ -3,16 +3,21 @@ This XBlock allows for edX components to be displayed to users inside of
 videos at specific time points.
 """
 
+import json
 import os
 import pkg_resources
 
 from xblock.core import XBlock
 from xblock.fields import Scope
 from xblock.fields import String
-from xblock.fragment import Fragment
+from web_fragments.fragment import Fragment
 from xblockutils.studio_editable import StudioEditableXBlockMixin
+from xblockutils.resources import ResourceLoader
 
 from .utils import _
+
+
+loader = ResourceLoader(__name__)
 
 
 def get_resource_string(path):
@@ -24,7 +29,9 @@ def get_resource_string(path):
     return resource_string.decode('utf8')
 
 
-class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
+#class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
+class InVideoQuizXBlock(XBlock):
+
     # pylint: disable=too-many-ancestors
     """
     Display CAPA problems within a video component at a specified time.
@@ -62,6 +69,140 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
         'video_id',
         'timemap',
     ]
+
+
+    debug_info = {}
+
+
+    def _get_options(self, parent_block, block_type):
+        locators = [child for child in parent_block.children if child.block_type == block_type]
+        options = [self._get_block_details(block) for block in locators]
+
+        # add the block id if there are duplicate options with the same name
+        for option in options:
+            count = sum(other_option['display_name'] == option['display_name'] for other_option in options)
+            option['label'] = option['display_name']
+            if count > 1:
+                option['label'] += ' (' + option['block_id'] + ')'
+
+        return options
+
+
+    def _get_block_details(self, block_locator):
+        block = self.runtime.get_block(block_locator)
+        block_details = {
+            'display_name': block.display_name,
+            'block_id': block_locator.block_id,
+        }
+        return block_details
+
+
+    def studio_view(self, context):
+        """
+        Render a form for editing this XBlock
+        """
+        fragment = Fragment()
+
+        parent_block = self.runtime.get_block(self.parent)
+        video_options = self._get_options(parent_block, 'video')
+
+        problem_options = self._get_options(parent_block, 'problem')
+
+        # convert map of times to blocks, to one of blocks to times
+        blocktimemap = {}
+        saved_timemap = {}
+        if self.timemap:
+            saved_timemap = json.loads(self.timemap)
+        if isinstance(saved_timemap, dict):
+            for time, block_id in saved_timemap.iteritems():
+                blocktimemap[block_id] = time
+        # self.debug_info['self.timemap'] = self.timemap
+        # self.debug_info['self.video_id'] = self.video_id
+
+        processed_timemap = []
+        for problem in problem_options:
+            processed_timemap.append({
+                'time': blocktimemap.get(problem['block_id'], ''),
+                'block_id': problem['block_id'],
+                'label': problem['label'],
+            })
+
+        context = {
+            'video_id': self.video_id,
+            'video_options': video_options,
+            'timemap': processed_timemap,
+            'debug_info': self.debug_info,
+            'has_videos': len(video_options) > 0,
+            'has_problem_components': len(processed_timemap) > 0,
+        }
+
+        fragment.content = loader.render_template('templates/studio_invideo_edit.html', context)
+        fragment.add_javascript(loader.load_unicode('public/studio_edit.js'))
+        fragment.initialize_js('StudioEditableXBlockMixin')
+        return fragment
+
+
+    @XBlock.json_handler
+    def submit_studio_edits(self, data, suffix=''):
+        """
+        AJAX handler for studio_view() Save button
+        """
+        if data['video_id']:
+            self.video_id = data['video_id']
+
+        timemap = {}
+        for mapping in data['timemap']:
+            if mapping['block_id'] and mapping['time'] and mapping['time'].isdigit():
+                timemap[mapping['time']] = mapping['block_id']
+        self.timemap = json.dumps(timemap)
+
+        # used for debugging
+        self.debug_info.clear()
+        # self.debug_info['data'] = data
+        # self.debug_info['video_id'] = self.video_id
+        # self.debug_info['timemap'] = self.timemap
+
+
+        ############################################################################
+        # {'data': {u'video': u'78c68fc0ecbd44b5a1ae39628107dce3', u'timemap': [
+        #     {u'problem': u'1bc2cdb12fe44b219332756bece8734e', u'time': u'3'},
+        #     {u'problem': u'blank', u'time': u'4'},
+        #     {u'problem': u'a93c133199ea4c7d969d9d05d23bfc05', u'time': u'6'},
+        #     {u'problem': u'blank', u'time': u''},
+        #     {u'problem': u'blank', u'time': u''},
+        #     {u'problem': u'1bc2cdb12fe44b219332756bece8734e', u'time': u''},
+        #     {u'problem': u'blank', u'time': u''}]}}
+
+        # values = {}  # dict of new field values we are updating
+        # to_reset = []  # list of field names to delete from this XBlock
+        # for field_name in self.editable_fields:
+        #     field = self.fields[field_name]
+        #     if field_name in data['values']:
+        #         if isinstance(field, JSONField):
+        #             values[field_name] = field.from_json(data['values'][field_name])
+        #         else:
+        #             raise JsonHandlerError(400, "Unsupported field type: {}".format(field_name))
+        #     elif field_name in data['defaults'] and field.is_set_on(self):
+        #         to_reset.append(field_name)
+        # self.clean_studio_edits(values)
+        # validation = Validation(self.scope_ids.usage_id)
+        # # We cannot set the fields on self yet, because even if validation fails, studio is going to save any changes we
+        # # make. So we create a "fake" object that has all the field values we are about to set.
+        # preview_data = FutureFields(
+        #     new_fields_dict=values,
+        #     newly_removed_fields=to_reset,
+        #     fallback_obj=self
+        # )
+        # self.validate_field_data(validation, preview_data)
+        # if validation:
+        #     for field_name, value in values.iteritems():
+        #         setattr(self, field_name, value)
+        #     for field_name in to_reset:
+        #         self.fields[field_name].delete_from(self)
+        #     return {'result': 'success'}
+        # else:
+        #     raise JsonHandlerError(400, validation.to_json())
+
 
     # Decorate the view in order to support multiple devices e.g. mobile
     # See: https://openedx.atlassian.net/wiki/display/MA/Course+Blocks+API
