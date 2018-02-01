@@ -6,6 +6,8 @@ function StudioEditableXBlockMixin(runtime, element) {
     var tinyMceAvailable = (typeof $.fn.tinymce !== 'undefined'); // Studio includes a copy of tinyMCE and its jQuery plugin
     var datepickerAvailable = (typeof $.fn.datepicker !== 'undefined'); // Studio includes datepicker jQuery plugin
 
+    var $element = $(element);
+
     $(element).find('.field-data-control').each(function() {
         var $field = $(this);
         var $wrapper = $field.closest('li');
@@ -140,23 +142,43 @@ function StudioEditableXBlockMixin(runtime, element) {
 
     $('.save-button', element).bind('click', function(e) {
         e.preventDefault();
-        var values = {};
-        var notSet = []; // List of field names that should be set to default values
-        for (var i in fields) {
-            var field = fields[i];
-            if (field.isSet()) {
-                values[field.name] = field.val();
-            } else {
-                notSet.push(field.name);
-            }
-            // Remove TinyMCE instances to make sure jQuery does not try to access stale instances
-            // when loading editor for another block:
-            if (field.hasEditor()) {
-                field.removeEditor();
-            }
-        }
-        studio_submit({values: values, defaults: notSet});
+        var video_id = '';
+        var timemap = [];
+
+        $element.find('.invideo-video-block').each(function() {
+            var $select = $(this);
+            video_id = $select.val()
+        });
+        $element.find('.invideo-time-mapping').each(function() {
+            var mapping = {};
+            var $row = $(this);
+            var $time = $($row.find('.invideo-problem-time')[0]);
+            mapping.time = $time.val();
+            mapping.block_id = $row.data('blockId');
+            timemap.push(mapping);
+        });
+        studio_submit({video_id: video_id, timemap: timemap});
     });
+
+    // $('.save-button', element).bind('click', function(e) {
+    //     e.preventDefault();
+    //     var values = {};
+    //     var notSet = []; // List of field names that should be set to default values
+    //     for (var i in fields) {
+    //         var field = fields[i];
+    //         if (field.isSet()) {
+    //             values[field.name] = field.val();
+    //         } else {
+    //             notSet.push(field.name);
+    //         }
+    //         // Remove TinyMCE instances to make sure jQuery does not try to access stale instances
+    //         // when loading editor for another block:
+    //         if (field.hasEditor()) {
+    //             field.removeEditor();
+    //         }
+    //     }
+    //     studio_submit({values: values, defaults: notSet});
+    // });
 
     $(element).find('.cancel-button').bind('click', function(e) {
         // Remove TinyMCE instances to make sure jQuery does not try to access stale instances

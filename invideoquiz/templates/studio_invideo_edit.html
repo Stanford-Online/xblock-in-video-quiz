@@ -1,42 +1,88 @@
 {% load i18n %}
 <div class="editor-with-buttons">
   <div class="wrapper-comp-settings is-active editor-with-buttons" id="settings-tab">
-    <div class="invideo-editor">
+     <style>
+        .invideo-editor {
+            margin: 10px;
+        }
+
+        .invideo-editor .video-header {
+            margin-bottom: 10px;
+        }
+
+        .invideo-editor .problems-header {
+            margin-top: 25px;
+            margin-bottom: 6px;
+        }
+
+        .invideo-editor h2 {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .invideo-editor .video-label {
+            margin-right: 5px;
+        }
+
+        .invideo-editor th {
+            padding: 7px;
+            padding-right: 30px;
+            font-weight: 600;
+            border-bottom: solid 2px black;
+        }
+
+        .invideo-editor td {
+            padding: 7px;
+            padding-right: 30px;
+        }
+
+        .invideo-problem-time {
+            width: 70px;
+        }
+     </style>
+     <div class="invideo-editor">
+        <h2 class="video-header">Choose a Video</h2>
         <div class="video-details">
-            <span class="label">Video:</span>
-            <span>
-                <select name="video">
-                    {% for option in video_options %}
-                      <option value="{{option.block_id}}" {% if video_id == option.block_id %}selected{% endif %}>{{option.label}}</option>
-                    {% endfor %}
-                </select>
-            </span>
+            {% if has_videos == False %}
+                <span>You must add a video to this unit.</span>
+            {% else %}
+                <span class="video-label">Video Title:</span>
+                <span>
+                    <select name="video" class="invideo-video-block">
+                        {% for option in video_options %}
+                          <option value="{{option.block_id}}" {% if video_id == option.block_id %}selected{% endif %}>{{option.label}}</option>
+                        {% endfor %}
+                    </select>
+                </span>
+            {% endif %}
         </div>
-        <table>
-            <th class="timemaps-header">
-                <tr>
-                    <td>Start Time</td>
-                    <td>Problem Component</td>
-                </tr>
-            </th>
-            {% for mapping in timemaps %}
-                <tr>
-                    <td>
-                        <input
-                            type="text" name="time_{{ forloop.counter0 }}"
-                            value="{% if mapping.time %}{{ mapping.time }}{% endif %}">
-                        </input>
-                    </td>
-                    <td>
-                        <select name="problem_block_{{ forloop.counter0 }}">
-                            {% for option in problem_options %}
-                              <option value="{{option.block_id}}" {% if mapping.block_id == option.block_id %}selected{% endif %}>{{option.label}}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
+        <h2 class="problems-header">Edit Problem Timing</h2>
+        {% if has_problem_components == False %}
+            <span>You must add at least one CAPA Problem to this unit.</span>
+        {% else %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Problem Title</th>
+                        <th>Trigger Time (secs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mapping in timemap %}
+                        <tr class="invideo-time-mapping" data-block-id="{{mapping.block_id}}">
+                            <td class="invideo-problem-block">{{mapping.label}}</td>
+                            <td>
+                                <input
+                                    class="invideo-problem-time"
+                                    type="text" name="time_{{ forloop.counter0 }}"
+                                    value="{% if mapping.time %}{{ mapping.time }}{% endif %}">
+                                </input>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
     </div>
   </div>
   <div class="xblock-actions">
