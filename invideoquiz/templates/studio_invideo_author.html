@@ -1,0 +1,62 @@
+{% load i18n %}
+<div class="invideo-preview">
+     <style>
+        .invideo-preview {
+            margin: 10px;
+        }
+
+        .invideo-preview .video-label {
+            margin-right: 5px;
+        }
+
+        .invideo-preview th {
+            padding: 7px;
+            padding-right: 30px;
+            font-weight: 600;
+            border-bottom: solid 2px black;
+        }
+
+        .invideo-preview td {
+            padding: 7px;
+            padding-right: 30px;
+        }
+
+        .invideo-problem-time {
+            width: 70px;
+        }
+     </style>
+     <div class="invideo-preview">
+        <div class="video-details">
+            {% if has_videos == False %}
+                <span>If this unit contains a video, use Edit to select the video.</span>
+            {% else %}
+                <span class="video-label">Video Title:</span>
+                <span>
+                    {% for option in video_options %}
+                      {% if video_id == option.block_id %}{{option.label}}{% endif %}
+                    {% endfor %}
+                </span>
+            {% endif %}
+        </div>
+        {% if has_problem_components == False %}
+            <span>If this unit contains CAPA Problems, use Edit to add triggers.</span>
+        {% else %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Problem Title</th>
+                        <th>Trigger Time (secs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mapping in timemap %}
+                        <tr class="invideo-time-mapping" data-block-id="{{mapping.block_id}}">
+                            <td class="invideo-problem-block">{{mapping.label}}</td>
+                            <td>{{ mapping.time }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</div>
