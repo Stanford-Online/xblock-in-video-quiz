@@ -70,9 +70,8 @@ class InVideoQuizXBlock(XBlock):
         'timemap',
     ]
 
-
     debug_info = {}
-
+    has_author_view = True  # Tells Studio to use author_view
 
     def _get_options(self, parent_block, block_type):
         locators = [child for child in parent_block.children if child.block_type == block_type]
@@ -139,6 +138,53 @@ class InVideoQuizXBlock(XBlock):
         fragment.content = loader.render_template('templates/studio_invideo_edit.html', context)
         fragment.add_javascript(loader.load_unicode('public/studio_edit.js'))
         fragment.initialize_js('StudioEditableXBlockMixin')
+        return fragment
+
+
+    def author_view(self, context=None):
+        """
+        Render a form for editing this XBlock
+        """
+        fragment = Fragment()
+
+        parent_block = self.runtime.get_block(self.parent)
+        video_options = self._get_options(parent_block, 'video')
+
+
+        problem_options = self._get_options(parent_block, 'problem')
+
+        # convert map of times to blocks, to one of blocks to times
+        blocktimemap = {}
+        saved_timemap = {}
+        if self.timemap:
+            saved_timemap = json.loads(self.timemap)
+        if isinstance(saved_timemap, dict):
+            for time, block_id in saved_timemap.iteritems():
+                blocktimemap[block_id] = time
+
+        processed_timemap = []
+        for problem in problem_options:
+            if blocktimemap.get(problem['block_id']):
+                processed_timemap.append({
+                    'time': blocktimemap.get(problem['block_id'], ''),
+                    'block_id': problem['block_id'],
+                    'label': problem['label'],
+                })
+
+        self.debug_info['video_options'] = video_options
+        self.debug_info['self.video_id'] = self.video_id
+        self.debug_info['has_videos'] = bool(self.video_id) and len(video_options) > 0
+
+        context = {
+            'video_id': self.video_id,
+            'video_options': video_options,
+            'timemap': processed_timemap,
+            'debug_info': self.debug_info,
+            'has_videos': bool(self.video_id) and len(video_options) > 0,
+            'has_problem_components': len(processed_timemap) > 0,
+        }
+
+        fragment.content = loader.render_template('templates/studio_invideo_author.html', context)
         return fragment
 
 
