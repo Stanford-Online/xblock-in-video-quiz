@@ -102,16 +102,18 @@ function InVideoQuizXBlock(runtime, element) {
         var resizeIntervalObject;
         var problemToDisplay;
 
-        $('.video-controls .secondary-controls').append('<button class="btn-problems-toggle">Disable Problems</button>');
+        $('.video-controls .secondary-controls').append('<button class="btn-problems-toggle"></button>');
+
+        $('.btn-problems-toggle').text(window.gettext('Disable Problems'));
 
         $('.btn-problems-toggle').click(function () {
             if (showProblemsAsPopup) {
                 showProblemsAsPopup = false;
-                $(this).text('Enable Problems');
+                $(this).text(window.gettext('Enable Problems'));
             }
             else {
                 showProblemsAsPopup = true;
-                $(this).text('Disable Problems');
+                $(this).text(window.gettext('Disable Problems'));
             }
         });
 
@@ -141,13 +143,16 @@ function InVideoQuizXBlock(runtime, element) {
                       modal: true,
                       width: "70%",
                       buttons: [{
-                        text: window.gettext('Continue'),
+                        text: window.gettext('Close'),
                         click: function() {
                           $(this).dialog("destroy");
+                          video.focus();
                           videoState.videoPlayer.play();
                         }
                       }]
                   });
+                  problemToDisplayEl.attr('aria-live', 'assertive');
+                  problemToDisplayEl.prepend('<span class="sr">Video paused. Please answer this question.</span>');
                   canDisplayProblem = false;
                 }
               });
