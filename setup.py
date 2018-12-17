@@ -52,7 +52,7 @@ setup(
         'invideoquiz',
     ],
     install_requires=[
-        'django >= 1.8, < 1.9',
+        'django >= 1.8',
         'django_nose',
         'mock',
         'coverage',
