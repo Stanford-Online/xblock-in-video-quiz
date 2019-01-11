@@ -45,7 +45,7 @@ class Tox(TestCommand):
 
 setup(
     name='invideoquiz-xblock',
-    version='0.1.6',
+    version='0.1.7',
     description='Helper XBlock to locate CAPA problems within videos.',
     license='AGPL v3',
     packages=[
