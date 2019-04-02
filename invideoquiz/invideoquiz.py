@@ -30,6 +30,8 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
     Display CAPA problems within a video component at a specified time.
     """
 
+    show_in_read_only_mode = True
+
     display_name = String(
         display_name=_('Display Name'),
         default=_('In-Video Quiz XBlock'),
