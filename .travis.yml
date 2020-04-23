@@ -2,7 +2,8 @@ sudo: false
 language: python
 cache: pip
 python:
-    - '3.5'
+    - 3.5
+    - 3.8
 before_install:
     - 'uname -a'
     - 'python --version'
@@ -18,10 +19,12 @@ branches:
     only:
       - 'master'
 env:
-    - TOXENV=py35-django111
-    - TOXENV=py35-django20
-    - TOXENV=py35-django21
-    - TOXENV=py35-django22
-    - TOXENV=coverage
-    - TOXENV=pep8
-    - TOXENV=pylint
+    - TOXENV=django22
+matrix:
+    include:
+        - python: 3.5
+          env: TOXENV=coverage
+        - python: 3.5
+          env: TOXENV=pep8
+        - python: 3.5
+          env: TOXENV=pylint
