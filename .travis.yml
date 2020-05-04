@@ -2,26 +2,24 @@ sudo: false
 language: python
 cache: pip
 python:
-    - '3.5'
+- 3.5
+- 3.8
 before_install:
-    - 'uname -a'
-    - 'python --version'
+- uname -a
+- python --version
 install:
-    - 'pip install tox'
-    - 'virtualenv --version'
-    - 'easy_install --version'
-    - 'pip --version'
-    - 'tox --version'
+- pip install tox
+- virtualenv --version
+- easy_install --version
+- pip --version
+- tox --version
 script:
-    - 'tox -v'
+- tox -v
 branches:
-    only:
-      - 'master'
+  only:
+  - master
 env:
-    - TOXENV=py35-django111
-    - TOXENV=py35-django20
-    - TOXENV=py35-django21
-    - TOXENV=py35-django22
-    - TOXENV=coverage
-    - TOXENV=pep8
-    - TOXENV=pylint
+- TOXENV=django22
+- TOXENV=coverage
+- TOXENV=pep8
+- TOXENV=pylint
