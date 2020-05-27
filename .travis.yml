@@ -8,11 +8,7 @@ before_install:
 - uname -a
 - python --version
 install:
-- pip install tox
-- virtualenv --version
-- easy_install --version
-- pip --version
-- tox --version
+- pip install -r requirements/travis.txt
 script:
 - tox -v
 branches:
@@ -21,5 +17,4 @@ branches:
 env:
 - TOXENV=django22
 - TOXENV=coverage
-- TOXENV=pep8
-- TOXENV=pylint
+- TOXENV=quality
