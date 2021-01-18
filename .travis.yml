@@ -2,19 +2,20 @@ sudo: false
 language: python
 cache: pip
 python:
-- 3.5
-- 3.8
+  - '3.8'
 before_install:
-- uname -a
-- python --version
+  - uname -a
+  - python --version
 install:
-- pip install -r requirements/travis.txt
+  - pip install -r requirements/travis.txt
 script:
-- tox -v
+  - tox -v
 branches:
   only:
-  - master
+    - master
 env:
-- TOXENV=django22
-- TOXENV=coverage
-- TOXENV=quality
+  - TOXENV=coverage
+  - TOXENV=quality
+  - TOXENV=django22
+  - TOXENV=django30
+  - TOXENV=django31

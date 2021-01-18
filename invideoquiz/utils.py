@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Make '_' a no-op so we can scrape strings
 """
