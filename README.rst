@@ -40,8 +40,8 @@ License
 The In Video Quiz XBlock is available under the AGPL Version 3.0 License.
 
 
-.. |BS| image:: https://travis-ci.org/Stanford-Online/xblock-in-video-quiz.svg
-  :target: https://travis-ci.org/Stanford-Online/xblock-in-video-quiz
+.. |BS| image:: https://travis-ci.com/edx/xblock-in-video-quiz.svg?branch=master
+  :target: https://travis-ci.com/github/edx/xblock-in-video-quiz
 
 .. |CA| image:: https://coveralls.io/repos/Stanford-Online/xblock-in-video-quiz/badge.svg?branch=master&service=github
   :target: https://coveralls.io/github/Stanford-Online/xblock-in-video-quiz?branch=master
