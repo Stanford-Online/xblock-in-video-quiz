@@ -10,5 +10,5 @@
 
 # TODO: Many pinned dependencies should be unpinned and/or moved to this constraints file.
 
-# Use latest Django LTS version
-Django<2.3.0
+# This file contains all common constraints for edx-repos
+-c https://raw.githubusercontent.com/edx/edx-lint/master/edx_lint/files/common_constraints.txt
