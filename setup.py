@@ -68,7 +68,7 @@ class Tox(TestCommand):
 
 setup(
     name='invideoquiz-xblock',
-    version='0.1.8',
+    version='1.0.0',
     description='Helper XBlock to locate CAPA problems within videos.',
     license='AGPL v3',
     packages=[
@@ -92,7 +92,6 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.8",
     ],
 )
