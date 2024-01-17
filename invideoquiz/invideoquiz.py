@@ -85,6 +85,8 @@ class InVideoQuizXBlock(StudioEditableXBlockMixin, XBlock):
             context={
                 'video_id': self.video_id,
                 'user_mode': self.user_mode,
+                'continue': _('Continue')
+
             },
         )
         config = get_resource_string('js/src/config.js')
